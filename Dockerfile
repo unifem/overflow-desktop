@@ -5,8 +5,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-# Use meshdb-desktop as base image
-FROM unifem/meshdb-desktop
+FROM x11vnc/docker-desktop
 LABEL maintainer "Xiangmin Jiao <xmjiao@gmail.com>"
 
 ARG GIT_REPO
@@ -16,7 +15,7 @@ WORKDIR $DOCKER_HOME
 
 RUN git clone ${GIT_REPO} overflow && \
     cd overflow && \
-    perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p .git/config && \
+    perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
     ./makeall gfotran && \
     \
     echo "export PATH=$DOCKER_HOME/overflow/bin:\$PATH:." >> \
