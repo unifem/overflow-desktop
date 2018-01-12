@@ -9,5 +9,5 @@ before_script:
   - git clone --depth=1 https://$GIT_TOKEN@github.com/xmjiao/ci-util.git
 
 script:
-  - './ci-util/build-docker.sh &&
+  - './ci-util/build-docker.sh : xmjiao/overflow-desktop --build-arg GIT_REPO=$GIT_REPO &&
      ./ci-util/trigger-via-api.sh ${!CHILDREN}'

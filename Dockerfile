@@ -11,12 +11,15 @@ LABEL maintainer "Xiangmin Jiao <xmjiao@gmail.com>"
 
 ARG GIT_REPO
 
-USER DOCKER_USER
-WORKDIR DOCKER_HOME
+USER $DOCKER_USER
+WORKDIR $DOCKER_HOME
 
-RUN git clone --depth 50 ${GIT_REPO} overflow && \
+RUN git clone ${GIT_REPO} overflow && \
     cd overflow && \
     perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p .git/config && \
-    ./makeall gfotran
+    ./makeall gfotran && \
+    && \
+    echo "export PATH=$DOCKER_HOME/overflow/bin:\$PATH:." >> \
+        $DOCKER_HOME/.profile
 
 USER root
