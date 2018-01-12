@@ -18,7 +18,7 @@ RUN git clone ${GIT_REPO} overflow && \
     cd overflow && \
     perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p .git/config && \
     ./makeall gfotran && \
-    && \
+    \
     echo "export PATH=$DOCKER_HOME/overflow/bin:\$PATH:." >> \
         $DOCKER_HOME/.profile
 
