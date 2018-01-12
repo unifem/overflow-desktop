@@ -5,7 +5,7 @@
 # Authors:
 # Xiangmin Jiao <xmjiao@gmail.com>
 
-FROM x11vnc/docker-desktop
+FROM compdatasci/petsc-desktop
 LABEL maintainer "Xiangmin Jiao <xmjiao@gmail.com>"
 
 ARG GIT_REPO

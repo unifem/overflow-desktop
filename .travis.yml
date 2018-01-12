@@ -2,12 +2,9 @@ os: linux
 language: python
 services: docker
 
-env:
-   - CHILDREN=CHILDREN_${TRAVIS_BRANCH}
-
 before_script:
   - git clone --depth=1 https://$GIT_TOKEN@github.com/xmjiao/ci-util.git 2> /dev/null
 
 script:
   - './ci-util/build-docker.sh : xmjiao/overflow-desktop --build-arg GIT_REPO=$GIT_REPO &&
-     ./ci-util/trigger-via-api.sh ${!CHILDREN}'
+     ./ci-util/trigger-via-api.sh'
