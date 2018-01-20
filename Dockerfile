@@ -16,7 +16,7 @@ WORKDIR $DOCKER_HOME
 RUN git clone ${GIT_REPO} overflow 2> /dev/null && \
     cd overflow && \
     perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
-    ./makeall gfortran && \
+    MPI_ROOT=/usr/lib/x86_64-linux-gnu/openmpi ./makeall gfortran && \
     \
     echo "export PATH=$DOCKER_HOME/overflow/bin:\$PATH:." >> \
         $DOCKER_HOME/.profile
