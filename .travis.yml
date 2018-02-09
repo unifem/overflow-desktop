@@ -9,5 +9,6 @@ script:
   - './ci-util/build-docker.sh : xmjiao/overflow-desktop
          --build-arg GIT_REPO=$GIT_REPO
          --build-arg PEG_REPO=$PEG_REPO
-         --build-arg CGT_REPO=$CGT_REPO &&
+         --build-arg CGT_REPO=$CGT_REPO
+         --build-arg PLT_REPO=$PLT_REPO &&
      ./ci-util/trigger-via-api.sh'

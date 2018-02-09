@@ -14,6 +14,7 @@ WORKDIR /tmp
 ARG GIT_REPO
 ARG PEG_REPO
 ARG CGT_REPO
+ARG PLT_REPO
 
 ARG TCLTK_VERSION=8.5
 
@@ -27,6 +28,8 @@ RUN apt-get update && \
         libgl1-mesa-dev \
         libglu1-mesa \
         libglu1-mesa-dev \
+        libxi-dev \
+        freeglut3 freeglut3-dev \
         libxmu-dev \
         python-dev \
         python-numpy \
@@ -50,6 +53,7 @@ USER $DOCKER_USER
 WORKDIR $DOCKER_HOME
 
 # Obtain overflow and compile it with MPI
+# https://overflow.larc.nasa.gov/files/2016/02/Chapter_2.pdf
 RUN git clone ${GIT_REPO} overflow 2> /dev/null && \
     cd overflow && \
     perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
@@ -74,7 +78,7 @@ RUN cd $DOCKER_HOME && \
 # Obtain chimera2 and compile it
 # https://www.nas.nasa.gov/publications/software/docs/chimera/index.html
 RUN cd $DOCKER_HOME && \
-    git clone ${CHIMERA_REPO} chimera2 2> /dev/null && \
+    git clone ${CGT_REPO} chimera2 2> /dev/null && \
     cd chimera2 && \
     perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
     ./configure --with-fort=gfortran --with-cc=gcc && \
@@ -83,6 +87,18 @@ RUN cd $DOCKER_HOME && \
     make clean && \
     \
     echo "export PATH=$DOCKER_HOME/chimera2/bin_dp:\$PATH:." >> \
+        $DOCKER_HOME/.profile
+
+# Obtain plot3d and compile it; Do not enable CGNS
+RUN cd $DOCKER_HOME && \
+    git clone ${PLT_REPO} plot3d4 2> /dev/null && \
+    cd plot3d4 && \
+    perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
+    ./configure && \
+    make && \
+    make clean && \
+    \
+    echo "export PATH=$DOCKER_HOME/plot3d4/bin:\$PATH:." >> \
         $DOCKER_HOME/.profile
 
 USER root
