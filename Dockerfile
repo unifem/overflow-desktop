@@ -8,15 +8,49 @@
 FROM compdatasci/petsc-desktop
 LABEL maintainer "Xiangmin Jiao <xmjiao@gmail.com>"
 
+USER root
+WORKDIR /tmp
+
 ARG GIT_REPO
+ARG PEG_REPO
+ARG CGT_REPO
+
+ARG TCLTK_VERSION=8.5
+
+# Install system packages required by Chimera
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+        libtcl${TCLTK_VERSION} \
+        libtk${TCLTK_VERSION} \
+        tcl${TCLTK_VERSION}-dev \
+        tk${TCLTK_VERSION}-dev \
+        libgl1-mesa-dev \
+        libglu1-mesa \
+        libglu1-mesa-dev \
+        libxmu-dev \
+        python-dev \
+        python-numpy \
+        python-matplotlib \
+        swig && \
+    apt-get clean && \
+    apt-get autoremove && \
+    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+ENV TCLDIR_INC=/usr/include/tcl${TCLTK_VERSION} \
+    TKDIR_INC=/usr/include/tk${TCLTK_VERSION} \
+    X11DIR_INC=/usr/include \
+    TCLDIR_SO=/usr/lib/x86_64-linux-gnu \
+    TKDIR_SO=/usr/lib/x86_64-linux-gnu \
+    X11DIR_SO=/usr/lib/x86_64-linux-gnu \
+    TCL_LIBRARY=/usr/share/tcltk/tcl${TCLTK_VERSION} \
+    TK_LIBRARY=/usr/share/tcltk/tk${TCLTK_VERSION} \
+    PYTHON_INC=/usr/include/python2.7
 
 USER $DOCKER_USER
 WORKDIR $DOCKER_HOME
 
 # Obtain overflow and compile it with MPI
-RUN mkdir -p $DOCKER_HOME/project && \
-    cd $DOCKER_HOME/project && \
-    git clone ${GIT_REPO} overflow 2> /dev/null && \
+RUN git clone ${GIT_REPO} overflow 2> /dev/null && \
     cd overflow && \
     perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
     MPI_ROOT=/usr/lib/x86_64-linux-gnu/openmpi ./makeall gfortran && \
@@ -25,7 +59,8 @@ RUN mkdir -p $DOCKER_HOME/project && \
         $DOCKER_HOME/.profile
 
 # Obtain pagasus5 and compile it with MPI
-RUN cd $DOCKER_HOME/project && \
+# https://www.nas.nasa.gov/publications/software/docs/pegasus5/s
+RUN cd $DOCKER_HOME && \
     git clone ${PEG_REPO} pegasus5 2> /dev/null && \
     cd pegasus5 && \
     perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
@@ -34,6 +69,20 @@ RUN cd $DOCKER_HOME/project && \
     make CMD=install && \
     \
     echo "export PATH=$DOCKER_HOME/bin:\$PATH:." >> \
+        $DOCKER_HOME/.profile
+
+# Obtain chimera2 and compile it
+# https://www.nas.nasa.gov/publications/software/docs/chimera/index.html
+RUN cd $DOCKER_HOME && \
+    git clone ${CHIMERA_REPO} chimera2 2> /dev/null && \
+    cd chimera2 && \
+    perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
+    ./configure --with-fort=gfortran --with-cc=gcc && \
+    make && \
+    make CMD=install && \
+    make clean && \
+    \
+    echo "export PATH=$DOCKER_HOME/chimera2/bin_dp:\$PATH:." >> \
         $DOCKER_HOME/.profile
 
 USER root
