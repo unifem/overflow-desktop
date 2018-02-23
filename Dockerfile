@@ -60,7 +60,7 @@ RUN git clone ${GIT_REPO} overflow 2> /dev/null && \
     MPI_ROOT=/usr/lib/x86_64-linux-gnu/openmpi ./makeall gfortran && \
     \
     echo "export PATH=$DOCKER_HOME/overflow/bin:\$PATH:." >> \
-        $DOCKER_HOME/.profile
+        $DOCKER_HOME/.zshrc
 
 # Obtain pagasus5 and compile it with MPI
 # https://www.nas.nasa.gov/publications/software/docs/pegasus5/s
@@ -73,7 +73,7 @@ RUN cd $DOCKER_HOME && \
     make CMD=install && \
     \
     echo "export PATH=$DOCKER_HOME/bin:\$PATH:." >> \
-        $DOCKER_HOME/.profile
+        $DOCKER_HOME/.zshrc
 
 # Obtain chimera2 and compile it
 # https://www.nas.nasa.gov/publications/software/docs/chimera/index.html
@@ -86,8 +86,8 @@ RUN cd $DOCKER_HOME && \
     make CMD=install && \
     make clean && \
     \
-    echo "export PATH=$DOCKER_HOME/chimera2/bin_dp:\$PATH:." >> \
-        $DOCKER_HOME/.profile
+    echo "export PATH=$DOCKER_HOME/chimera2/bin_sp:\$PATH:." >> \
+        $DOCKER_HOME/.zshrc
 
 # Obtain plot3d and compile it; Do not enable CGNS
 RUN cd $DOCKER_HOME && \
@@ -99,6 +99,6 @@ RUN cd $DOCKER_HOME && \
     make clean && \
     \
     echo "export PATH=$DOCKER_HOME/plot3d4/bin:\$PATH:." >> \
-        $DOCKER_HOME/.profile
+        $DOCKER_HOME/.zshrc
 
 USER root
