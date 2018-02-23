@@ -72,7 +72,7 @@ RUN cd $DOCKER_HOME && \
     make && \
     make CMD=install && \
     \
-    echo "export PATH=$DOCKER_HOME/bin:\$PATH:." >> \
+    echo "export PATH=$DOCKER_HOME/bin:\$PATH" >> \
         $DOCKER_HOME/.zshrc
 
 # Obtain chimera2 and compile it
@@ -86,7 +86,7 @@ RUN cd $DOCKER_HOME && \
     make CMD=install && \
     make clean && \
     \
-    echo "export PATH=$DOCKER_HOME/chimera2/bin_sp:\$PATH:." >> \
+    echo "export PATH=$DOCKER_HOME/chimera2/bin_sp:\$PATH" >> \
         $DOCKER_HOME/.zshrc
 
 # Obtain plot3d and compile it; Do not enable CGNS
@@ -98,7 +98,7 @@ RUN cd $DOCKER_HOME && \
     make && \
     make clean && \
     \
-    echo "export PATH=$DOCKER_HOME/plot3d4/bin:\$PATH:." >> \
+    echo "export PATH=$DOCKER_HOME/plot3d4/bin:\$PATH" >> \
         $DOCKER_HOME/.zshrc
 
 USER root
