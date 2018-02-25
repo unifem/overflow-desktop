@@ -268,8 +268,8 @@ if __name__ == "__main__":
             except subprocess.CalledProcessError as e:
                 sys.stderr.write(e.output.decode('utf-8'))
 
-        volumes += ["-v", args.volume + ":" + docker_home + "/overture",
-                    "-w", docker_home + "/overture"]
+        volumes += ["-v", args.volume + ":" + docker_home + "/" + APP,
+                    "-w", docker_home + "/" + APP]
     else:
         volumes += ["-w", docker_home + "/shared"]
 
