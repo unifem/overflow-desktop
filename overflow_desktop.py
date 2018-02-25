@@ -286,7 +286,6 @@ if __name__ == "__main__":
         if not size:
             # Set default size and disable webbrowser
             size = "1440x900"
-            args.no_browser = True
     else:
         size = args.size
 
