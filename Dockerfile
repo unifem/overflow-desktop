@@ -34,7 +34,16 @@ RUN apt-get update && \
         python-dev \
         python-numpy \
         python-matplotlib \
-        swig && \
+        python-mpi4py \
+        \
+        swig \
+        time \
+        grace \
+        gnuplot \
+        python3-dev \
+        python3-numpy \
+        python3-matplotlib \
+        python3-mpi4py && \
     apt-get clean && \
     apt-get autoremove && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
@@ -47,7 +56,9 @@ ENV TCLDIR_INC=/usr/include/tcl${TCLTK_VERSION} \
     X11DIR_SO=/usr/lib/x86_64-linux-gnu \
     TCL_LIBRARY=/usr/share/tcltk/tcl${TCLTK_VERSION} \
     TK_LIBRARY=/usr/share/tcltk/tk${TCLTK_VERSION} \
-    PYTHON_INC=/usr/include/python2.7
+    PYTHON_INC=/usr/include/python2.7 \
+    TIME=/usr/bin/time \
+    MPI_ROOT=/usr
 
 USER $DOCKER_USER
 WORKDIR $DOCKER_HOME
