@@ -57,8 +57,11 @@ ENV TCLDIR_INC=/usr/include/tcl${TCLTK_VERSION} \
     TCL_LIBRARY=/usr/share/tcltk/tcl${TCLTK_VERSION} \
     TK_LIBRARY=/usr/share/tcltk/tk${TCLTK_VERSION} \
     PYTHON_INC=/usr/include/python2.7 \
-    TIME=/usr/bin/time \
-    MPI_ROOT=/usr
+    \
+    MPI_ROOT=/usr/lib/x86_64-linux-gnu/openmpi \
+    PYTHON_INCLUDE=/usr/include/python2.7 \
+    NUMPY_INCLUDE=/usr/include/python2.7/numpy \
+    TIME=/usr/bin/time
 
 USER $DOCKER_USER
 WORKDIR $DOCKER_HOME
@@ -68,7 +71,7 @@ WORKDIR $DOCKER_HOME
 RUN git clone ${GIT_REPO} overflow 2> /dev/null && \
     cd overflow && \
     perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
-    MPI_ROOT=/usr/lib/x86_64-linux-gnu/openmpi ./makeall gfortran && \
+    ./makeall gfortran && \
     \
     echo "export PATH=$DOCKER_HOME/overflow/bin:\$PATH:." >> \
         $DOCKER_HOME/.zshrc
