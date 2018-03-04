@@ -61,8 +61,9 @@ ENV TCLDIR_INC=/usr/include/tcl${TCLTK_VERSION} \
     PYTHON_INC=/usr/include/python2.7 \
     \
     MPI_ROOT=/usr/lib/x86_64-linux-gnu/openmpi \
-    PYTHON_INCLUDE=/usr/include/python2.7 \
-    NUMPY_INCLUDE=/usr/include/python2.7/numpy \
+    PYTHON=python3 \
+    PYTHON_INCLUDE=/usr/include/python3.6 \
+    NUMPY_INCLUDE=/usr/include/python3.6/numpy \
     TIME=/usr/bin/time
 
 USER $DOCKER_USER
