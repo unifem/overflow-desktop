@@ -15,6 +15,8 @@ ARG GIT_REPO
 ARG PEG_REPO
 ARG CGT_REPO
 ARG PLT_REPO
+ARG MAKE_SUF=_sp
+ARG BIN_SUF=
 
 ARG TCLTK_VERSION=8.5
 
@@ -71,9 +73,9 @@ WORKDIR $DOCKER_HOME
 RUN git clone ${GIT_REPO} overflow 2> /dev/null && \
     cd overflow && \
     perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
-    ./makeall gfortran && \
+    ./makeall$MAKE_SUF gfortran && \
     \
-    echo "export PATH=$DOCKER_HOME/overflow/bin:\$PATH:." >> \
+    echo "export PATH=$DOCKER_HOME/overflow/bin$BIN_SUF:\$PATH:." >> \
         $DOCKER_HOME/.zshrc
 
 # Obtain pagasus5 and compile it with MPI
@@ -100,7 +102,7 @@ RUN cd $DOCKER_HOME && \
     make CMD=install && \
     make clean && \
     \
-    echo "export PATH=$DOCKER_HOME/chimera2/bin_sp:\$PATH" >> \
+    echo "export PATH=$DOCKER_HOME/chimera2/bin$MAKE_SUF:\$PATH" >> \
         $DOCKER_HOME/.zshrc
 
 # Obtain plot3d and compile it; Do not enable CGNS
