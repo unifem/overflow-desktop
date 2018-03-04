@@ -3,7 +3,7 @@ language: python
 services: docker
 
 env:
-  - MAKE_SUF=_sp BIN_SUF= TAGS=master,sp
+  - MAKE_SUF=_sp BIN_SUF= TAGS=latest,sp
   - MAKE_SUF=_dp BIN_SUF=_dp TAGS=dp
 
 before_script:
