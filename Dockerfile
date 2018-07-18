@@ -1,22 +1,30 @@
 # Builds a Docker image for NASA Overflow 2.2 in a Desktop environment
 # with Ubuntu and LXDE in both serial and parallel. The resulting image
 # will be committed into a private repository.
-#
-# Authors:
-# Xiangmin Jiao <xmjiao@gmail.com>
+
+FROM compdatasci/petsc-desktop as intermediate
+
+ARG OVF_REPO
+ARG PEG_REPO
+ARG CGT_REPO
+ARG PLT_REPO
+
+USER root
+WORKDIR /tmp
+
+# checkout repositories
+RUN git clone --depth=1 ${OVF_REPO} apps/overflow 2> /dev/null && \
+    git clone --depth=1 ${PEG_REPO} apps/pegasus5 2> /dev/null && \
+    git clone --depth=1 ${CGT_REPO} apps/chimera2 2> /dev/null && \
+    git clone --depth=1 ${PLT_REPO} apps/plot3d4 2> /dev/null && \
+    perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i \
+        apps/*/.git/config
 
 FROM compdatasci/petsc-desktop
 LABEL maintainer "Xiangmin Jiao <xmjiao@gmail.com>"
 
 USER root
 WORKDIR /tmp
-
-ARG GIT_REPO
-ARG PEG_REPO
-ARG CGT_REPO
-ARG PLT_REPO
-ARG MAKE_SUF=_sp
-ARG BIN_SUF=
 
 ARG TCLTK_VERSION=8.5
 
@@ -67,14 +75,18 @@ ENV TCLDIR_INC=/usr/include/tcl${TCLTK_VERSION} \
     NUMPY3_INCLUDE=/usr/include/python3.6/numpy \
     TIME=/usr/bin/time
 
-USER $DOCKER_USER
 WORKDIR $DOCKER_HOME
+COPY --from=intermediate /tmp/apps .
+RUN chown -R $DOCKER_USER:$DOCKER_GROUP $DOCKER_HOME
+
+USER $DOCKER_USER
+
+ARG MAKE_SUF=_sp
+ARG BIN_SUF=
 
 # Obtain overflow and compile it with MPI
 # https://overflow.larc.nasa.gov/files/2016/02/Chapter_2.pdf
-RUN git clone ${GIT_REPO} overflow 2> /dev/null && \
-    cd overflow && \
-    perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
+RUN cd overflow && \
     ./makeall$MAKE_SUF gfortran && \
     \
     echo "export PATH=$DOCKER_HOME/overflow/bin$BIN_SUF:\$PATH:." >> \
@@ -83,9 +95,7 @@ RUN git clone ${GIT_REPO} overflow 2> /dev/null && \
 # Obtain pagasus5 and compile it with MPI
 # https://www.nas.nasa.gov/publications/software/docs/pegasus5/s
 RUN cd $DOCKER_HOME && \
-    git clone ${PEG_REPO} pegasus5 2> /dev/null && \
     cd pegasus5 && \
-    perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
     ./configure --with-mpif90 && \
     make && \
     make CMD=install && \
@@ -96,9 +106,7 @@ RUN cd $DOCKER_HOME && \
 # Obtain chimera2 and compile it
 # https://www.nas.nasa.gov/publications/software/docs/chimera/index.html
 RUN cd $DOCKER_HOME && \
-    git clone ${CGT_REPO} chimera2 2> /dev/null && \
     cd chimera2 && \
-    perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
     ./configure --with-fort=gfortran --with-cc=gcc && \
     make && \
     make CMD=install && \
@@ -109,9 +117,7 @@ RUN cd $DOCKER_HOME && \
 
 # Obtain plot3d and compile it; Do not enable CGNS
 RUN cd $DOCKER_HOME && \
-    git clone ${PLT_REPO} plot3d4 2> /dev/null && \
     cd plot3d4 && \
-    perl -e 's/https:\/\/[\w:\.]+@([\w\.]+)\//git\@$1:/' -p -i .git/config && \
     ./configure && \
     make && \
     make clean && \
