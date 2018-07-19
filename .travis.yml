@@ -5,7 +5,7 @@ services: docker
 
 env:
   - MAKE_SUF=_sp BIN_SUF= TAGS=ovf_sp
-  - MAKE_SUF=_dp BIN_SUF=_dp TAGS=ovf_dp
+  - MAKE_SUF=_dp BIN_SUF=_dp TAGS=ovf_dp,latest
 
 before_script:
   - sudo echo '{"experimental":true}' | sudo tee /etc/docker/daemon.json
