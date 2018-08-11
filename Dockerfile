@@ -87,7 +87,7 @@ ARG BIN_SUF=
 # Obtain overflow and compile it with MPI
 # https://overflow.larc.nasa.gov/files/2016/02/Chapter_2.pdf
 RUN cd overflow && \
-    ./makeall$MAKE_SUF gfortran F90FLAGS=-O3 CFLAGS=-O3  && \
+    ./makeall$MAKE_SUF gfortran && \
     \
     echo "export PATH=$DOCKER_HOME/overflow/bin$BIN_SUF:\$PATH:." >> \
         $DOCKER_HOME/.zshrc
