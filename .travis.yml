@@ -19,5 +19,7 @@ script:
          --build-arg CGT_REPO=$CGT_REPO
          --build-arg PLT_REPO=$PLT_REPO
          --build-arg MAKE_SUF=$MAKE_SUF
-         --build-arg BIN_SUF=$BIN_SUF --squash &&
-     ./ci-util/trigger-via-api.sh'
+         --build-arg BIN_SUF=$BIN_SUF --squash'
+
+after_success:
+  -  ./ci-util/trigger-via-api.sh
